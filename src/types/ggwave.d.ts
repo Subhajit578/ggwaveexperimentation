@@ -1,0 +1,1 @@
+declare const ggwave_factory: any;
