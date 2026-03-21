@@ -1,0 +1,17 @@
+Experiment 1: Basic Communication
+
+Devices Tested:
+Sender:
+Receiver:
+
+----------------------------------------
+Test Case | Message | Distance | Received (Y/N) | Delay (s) | Notes
+----------------------------------------
+1         | HELLO   | 1m       |                |           |      
+2         | TEST    | 1m       |                |           |      
+3         | DEVICE_A| 2m       |                |           |      
+----------------------------------------
+
+Summary:
+- 
+- 

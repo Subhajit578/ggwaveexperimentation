@@ -6,7 +6,7 @@ declare const ggwave_factory: any;
 export default function CapabilityTest() {
   const { sendMessage } = useGgwave();
 
-  const [deviceId, setDeviceId] = useState("DEVICE_A");
+  const [message, setMessage] = useState("HELLO");
   const [mode, setMode] = useState("audible");
   const [status, setStatus] = useState("Idle");
   const [lastDecoded, setLastDecoded] = useState("");
@@ -46,8 +46,13 @@ export default function CapabilityTest() {
 
   async function handleBroadcast() {
     try {
-      setStatus(`Broadcasting test from ${deviceId}`);
-      await sendMessage(`TEST_SIGNAL_FROM_${deviceId}`);
+      if (!message.trim()) {
+        setStatus("Please enter a message");
+        return;
+      }
+
+      setStatus(`Broadcasting: ${message}`);
+      await sendMessage(message);
     } catch (error) {
       console.error(error);
       setStatus("Broadcast failed");
@@ -141,11 +146,11 @@ export default function CapabilityTest() {
 
       <div style={{ display: "grid", gap: "12px", maxWidth: "400px" }}>
         <label>
-          Device ID
+          Message
           <br />
           <input
-            value={deviceId}
-            onChange={(e) => setDeviceId(e.target.value)}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             style={{ width: "100%" }}
           />
         </label>
@@ -164,7 +169,7 @@ export default function CapabilityTest() {
         </label>
 
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-          <button onClick={handleBroadcast}>Broadcast Test Signal</button>
+          <button onClick={handleBroadcast}>Broadcast Message</button>
 
           {!isListening ? (
             <button onClick={handleStartListening}>Start Listening</button>
