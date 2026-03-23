@@ -58,6 +58,7 @@ export function useGgwave(defaultProtocolMode: GgwaveProtocolMode = "audible") {
       parameters.sampleRateOut = audioContextRef.current.sampleRate;
       instanceRef.current = ggwaveRef.current.init(parameters);
     }
+    console.log('Actual sample rate:', audioContextRef.current?.sampleRate);
   }
 
   async function sendMessage(
@@ -78,7 +79,8 @@ export function useGgwave(defaultProtocolMode: GgwaveProtocolMode = "audible") {
 
     const protocolConfig = GGWAVE_PROTOCOLS[protocolMode];
     const protocol = ggwave.ProtocolId[protocolConfig.idKey];
-
+    console.log('Available protocols:', Object.keys(ggwave.ProtocolId));
+    console.log('Using protocol key:', protocolConfig.idKey, '→ ID:', protocol);
     const waveform = ggwave.encode(instance, text, protocol, volume);
     const buf = convertTypedArray(waveform, Float32Array);
     const transmitDurationMs = Math.ceil((buf.length / context.sampleRate) * 1000);

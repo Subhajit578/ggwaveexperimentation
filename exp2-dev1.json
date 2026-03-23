@@ -1,0 +1,155 @@
+{
+  "exportedAt": "2026-03-23T19:39:16.086Z",
+  "protocolMode": "audible",
+  "distanceMeters": 1,
+  "note": "phase-1-audible-1m",
+  "transmitAttempts": 0,
+  "decodeCount": 18,
+  "successRate": 0,
+  "decodeEvents": [
+    {
+      "timestamp": "2026-03-23T19:38:13.065Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:20.430Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:23.438Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:26.425Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:29.430Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:32.439Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:35.450Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:38.435Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:41.436Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:44.451Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:47.458Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:50.443Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:53.431Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:56.472Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:38:59.437Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:39:02.463Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:39:05.452Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    },
+    {
+      "timestamp": "2026-03-23T19:39:08.459Z",
+      "protocolMode": "audible",
+      "decodedMessage": "DEVICE:B202|MEETING:demo-room",
+      "distanceMeters": 1,
+      "gatingActive": false,
+      "note": "phase-1-audible-1m"
+    }
+  ]
+}
