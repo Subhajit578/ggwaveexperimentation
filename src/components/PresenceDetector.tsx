@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useGgwave } from "../hooks/useGgwave";
+import {
+  GGWAVE_PROTOCOLS,
+  useGgwave,
+} from "../hooks/useGgwave";
+import type { GgwaveProtocolMode } from "../hooks/useGgwave";
 
 declare const ggwave_factory: any;
 
@@ -9,13 +13,28 @@ type NearbyDevice = {
 };
 
 export default function PresenceDetector() {
-  const { sendMessage } = useGgwave();
-
+  const [mode, setMode] = useState<GgwaveProtocolMode>("audible");
+  const { sendMessage, isTransmittingNow } = useGgwave(mode);
   const [deviceId, setDeviceId] = useState("A101");
   const [meetingId, setMeetingId] = useState("demo-room");
   const [broadcasting, setBroadcasting] = useState(false);
   const [listening, setListening] = useState(false);
   const [nearbyDevices, setNearbyDevices] = useState<NearbyDevice[]>([]);
+  const [distanceMeters, setDistanceMeters] = useState("1");
+  const [sessionNote, setSessionNote] = useState("");
+  const [decodeCount, setDecodeCount] = useState(0);
+  const [transmitAttempts, setTransmitAttempts] = useState(0);
+  const [gateActive, setGateActive] = useState(false);
+  const [decodeEvents, setDecodeEvents] = useState<
+    {
+      timestamp: string;
+      protocolMode: GgwaveProtocolMode;
+      decodedMessage: string;
+      distanceMeters: number | null;
+      gatingActive: boolean;
+      note: string;
+    }[]
+  >([]);
 
   const broadcastIntervalRef = useRef<number | null>(null);
 
@@ -74,12 +93,15 @@ export default function PresenceDetector() {
       const payload = buildBeaconPayload();
 
       setBroadcasting(true);
-
-      await sendMessage(payload);
+      setTransmitAttempts((prev) => prev + 1);
+      await sendMessage(payload, { protocolMode: mode });
+      setGateActive(isTransmittingNow());
 
       broadcastIntervalRef.current = window.setInterval(async () => {
         try {
-          await sendMessage(buildBeaconPayload());
+          setTransmitAttempts((prev) => prev + 1);
+          await sendMessage(buildBeaconPayload(), { protocolMode: mode });
+          setGateActive(isTransmittingNow());
         } catch (error) {
           console.error("Broadcast error:", error);
         }
@@ -127,6 +149,12 @@ export default function PresenceDetector() {
       const recorder = context.createScriptProcessor(1024, 1, 1);
 
       recorder.onaudioprocess = (event) => {
+        if (isTransmittingNow()) {
+          setGateActive(true);
+          return;
+        }
+
+        setGateActive(false);
         const source = event.inputBuffer;
         const res = ggwave.decode(
           instance,
@@ -138,7 +166,19 @@ export default function PresenceDetector() {
 
         if (res && res.length > 0) {
           const text = new TextDecoder("utf-8").decode(res);
+          const eventRecord = {
+            timestamp: new Date().toISOString(),
+            protocolMode: mode,
+            decodedMessage: text,
+            distanceMeters: Number.isFinite(Number(distanceMeters))
+              ? Number(distanceMeters)
+              : null,
+            gatingActive: false,
+            note: sessionNote.trim(),
+          };
           console.log("Decoded beacon:", text);
+          setDecodeCount((prev) => prev + 1);
+          setDecodeEvents((prev) => [...prev, eventRecord]);
 
           const parsed = parseBeacon(text);
 
@@ -193,6 +233,33 @@ export default function PresenceDetector() {
     setListening(false);
   }
 
+  function exportLog() {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      protocolMode: mode,
+      distanceMeters: Number.isFinite(Number(distanceMeters))
+        ? Number(distanceMeters)
+        : null,
+      note: sessionNote.trim(),
+      transmitAttempts,
+      decodeCount,
+      successRate:
+        transmitAttempts === 0
+          ? 0
+          : Number(((decodeCount / transmitAttempts) * 100).toFixed(2)),
+      decodeEvents,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `presence-log-${Date.now()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   useEffect(() => {
     const cleanupInterval = window.setInterval(() => {
       const now = Date.now();
@@ -234,6 +301,46 @@ export default function PresenceDetector() {
           />
         </label>
 
+        <label>
+          Protocol Mode
+          <br />
+          <select
+            value={mode}
+            onChange={(e) => setMode(e.target.value as GgwaveProtocolMode)}
+            style={{ width: "100%" }}
+          >
+            {Object.entries(GGWAVE_PROTOCOLS).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Distance (meters)
+          <br />
+          <input
+            type="number"
+            min="0"
+            step="0.1"
+            value={distanceMeters}
+            onChange={(e) => setDistanceMeters(e.target.value)}
+            style={{ width: "100%" }}
+          />
+        </label>
+
+        <label>
+          Session Note / Label
+          <br />
+          <input
+            value={sessionNote}
+            onChange={(e) => setSessionNote(e.target.value)}
+            placeholder="through wall, AEC enabled, etc."
+            style={{ width: "100%" }}
+          />
+        </label>
+
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {!broadcasting ? (
             <button onClick={startBroadcasting}>Start Broadcasting</button>
@@ -246,6 +353,9 @@ export default function PresenceDetector() {
           ) : (
             <button onClick={handleStopListening}>Stop Listening</button>
           )}
+          <button onClick={exportLog} disabled={decodeEvents.length === 0}>
+            Export Log JSON
+          </button>
         </div>
 
         <div>
@@ -254,6 +364,25 @@ export default function PresenceDetector() {
 
         <div>
           <strong>Listening:</strong> {listening ? "ON" : "OFF"}
+        </div>
+
+        <div>
+          <strong>Transmission Attempts:</strong> {transmitAttempts}
+        </div>
+
+        <div>
+          <strong>Decode Count:</strong> {decodeCount}
+        </div>
+
+        <div>
+          <strong>Success Rate:</strong>{" "}
+          {transmitAttempts === 0
+            ? "0%"
+            : `${((decodeCount / transmitAttempts) * 100).toFixed(2)}%`}
+        </div>
+
+        <div>
+          <strong>Receiver Gating:</strong> {gateActive ? "ACTIVE" : "INACTIVE"}
         </div>
 
         <div>

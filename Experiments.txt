@@ -1,17 +1,65 @@
-Experiment 1: Basic Communication
+Experiment 1: Basic Send/Receive
 
-Devices Tested:
-Sender:
-Receiver:
+Sender Device: 
+Receiver Device:
 
-----------------------------------------
-Test Case | Message | Distance | Received (Y/N) | Delay (s) | Notes
-----------------------------------------
-1         | HELLO   | 1m       |                |           |      
-2         | TEST    | 1m       |                |           |      
-3         | DEVICE_A| 2m       |                |           |      
-----------------------------------------
+--------------------------------------------------------------
+Test | Message | Distance | Received (Y/N) | Delay (s) | Notes
+--------------------------------------------------------------
+1    | HELLO   | 1m       |      Y         |     <1s   |
+2    | TEST    | 1m       |     Y          |     <1s  |
+3    | DEVICE_A| 2m       |      Y          |    ~1s       |
+--------------------------------------------------------------
 
-Summary:
-- 
-- 
+What this proves:
+- The browser integration of ggwave works for real-time short message exchange across devices.
+- This validates the core communication primitive needed for proximity detection and device pairing.
+
+
+Experiment 2: Presence Detection (Two Devices)
+
+Meeting ID: demo-room
+
+Phase 1: One-way detection
+--------------------------------------------------------------
+Sender | Listener | Detected (Y/N) | Time to Detect | Notes
+--------------------------------------------------------------
+A101   | B202     | Y              | < 1s           | Reliable
+B202   | A101     | Y              | < 1s           | Reliable
+--------------------------------------------------------------
+
+Phase 2: Two-way detection
+--------------------------------------------------------------
+Device | Own Beacon ID | Detected Device | Time to Detect | Notes
+--------------------------------------------------------------
+A      | A101          | B202            | ~1–3s          | Detected successfully
+B      | B202          | -               | -              | No detection while both broadcast simultaneously
+--------------------------------------------------------------
+
+What this proves:
+- Beacon-based nearby device detection works in at least one direction.
+- Simultaneous bidirectional broadcasting can cause asymmetric detection, likely due to audio interference or transmission overlap.
+
+
+Experiment 3: Dynamic Entry and Leaving
+
+Meeting ID: demo-room
+
+--------------------------------------------------------------
+Event            | Device | Detected/Removed (Y/N) | Time | Notes
+--------------------------------------------------------------
+B joins later    | B202   | Y                      | ~2s  | B detects A immediately
+B joins later    | A101   | N                      | -    | A did not detect B in this run
+B stops sending  | B202   | Y                      | ~10s | Removed after timeout
+--------------------------------------------------------------
+
+Observations:
+- When Device B joined later, it was able to detect Device A reliably.
+- Device A did not consistently detect Device B after it joined.
+- Device 2 (B202) had lower speaker volume compared to Device 1 (A101), which likely affected detection.
+- Detection appears to be asymmetric depending on device hardware and signal strength.
+
+What this proves:
+- The system supports dynamic entry: newly joining devices can detect existing participants.
+- The system supports dynamic leaving: devices are removed after they stop broadcasting.
+- Detection reliability is affected by device capability (e.g., speaker loudness) and signal timing.
